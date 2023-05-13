@@ -76,7 +76,7 @@ cron.schedule('*/2 * * * *', async ()=> {
   };
  isFunctionRunning = true;
 
- await updateQueue(100, 50, Math.floor(200+Math.random()*100))
+ await updateQueue(AGE, LIMIT, Math.floor(200+Math.random()*100))
  isFunctionRunning = false;
 
 
