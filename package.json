@@ -1,12 +1,13 @@
 {
-  "name": "scraper",
+  "name": "leetcoder-scraper",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "rm -rf build && prisma generate && tsc",
     "dev": "ts-node index.ts",
-    "start": "yarn build && node build/index.js"
+    "start": "yarn build && node build/index.js",
+    "pm2": "pm2 start npm --name 'leetcoder-scraper' -- start"
   },
   "keywords": [],
   "author": "",

@@ -4,14 +4,20 @@ import { leetcodeStats, getLeetcodeStatsToSave } from "./utils";
 import cron from "node-cron"
 import dontenv from "dotenv"
 dontenv.config();
-const db = new PrismaClient();
-let isFunctionRunning = false;
+// *=========================== CONFIG ===========================*
 const AGE  = Number(process.env.UPDATE_AGE) || 3600
 const LIMIT  = Number(process.env.UPDATE_LIMIT) || 20
 const TIMEOUT  = Number(process.env.UPDATE_TIMEOUT) || 200
+const CRON_STRING = process.env.CRON_STRING || crons.everyHour
+// *==============================================================*
 
 
-const CRON_STRING = process.env.CRON_STRING ||'*/2 * * * *'
+
+const db = new PrismaClient();
+let isFunctionRunning = false;
+
+
+
 const updateQueue = async (age = AGE, limit = LIMIT, timeout = TIMEOUT) => {
   console.log(`age: ${age}, limit: ${limit}, timeout: ${timeout}`)
   let updatedUsers = [];
