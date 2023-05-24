@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { leetcodeStats, getLeetcodeStatsToSave } from "./utils";
 import cron from "node-cron"
 import dontenv from "dotenv"
+import crons from "./crons"
 dontenv.config();
 // *=========================== CONFIG ===========================*
 const AGE  = Number(process.env.UPDATE_AGE) || 3600

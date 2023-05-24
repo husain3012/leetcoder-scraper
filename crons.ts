@@ -11,3 +11,5 @@ const crons = {
     everyFridayAtNoon: '0 12 * * 5',
     everyYearOnJanuaryFirst: '0 0 1 1 *'
   };
+
+  export default crons;
