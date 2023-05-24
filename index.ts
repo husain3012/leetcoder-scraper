@@ -92,3 +92,4 @@ cron.schedule(CRON_STRING, async ()=> {
 
 
 })
+cron.getTasks().forEach((_,x)=>console.log("cron scheduled:", x))
