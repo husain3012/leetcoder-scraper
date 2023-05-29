@@ -2,7 +2,6 @@ import { leetcodeify_user, parseHTML } from "./parser";
 import type ILeetcodeUser from "../@types/leetcode_user";
 import axios from "axios";
 
-
 export const leetcodeStats = async (
   usernames: string[]
 ): Promise<(ILeetcodeUser)[]> => {
@@ -50,6 +49,9 @@ export const getLeetcodeStatsToSave = (leetcodeUser: ILeetcodeUser) => {
     ).count,
     ranking: leetcodeUser.profile.ranking,
     streak: leetcodeUser.userCalendar.streak,
-    avatar: leetcodeUser.profile.userAvatar
+    avatar: leetcodeUser.profile.userAvatar,
+    contestAttended: leetcodeUser.contestAttended,
+    contestRanking: leetcodeUser.contestRanking,
+    contestRating: leetcodeUser.contestRating,
   };
 };
