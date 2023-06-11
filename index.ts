@@ -4,12 +4,12 @@ import { getLeetcodeStatsToSave } from "./utils";
 import cron from "node-cron"
 import dontenv from "dotenv"
 import crons from "./crons"
-import {getLCAccount} from "leetcode-public-api"
+import { getLCAccount } from "leetcode-public-api"
 dontenv.config();
 // *=========================== CONFIG ===========================*
-const AGE  = Number(process.env.UPDATE_AGE) || 3600
-const LIMIT  = Number(process.env.UPDATE_LIMIT) || 20
-const TIMEOUT  = Number(process.env.UPDATE_TIMEOUT) || 200
+const AGE = Number(process.env.UPDATE_AGE) || 3600
+const LIMIT = Number(process.env.UPDATE_LIMIT) || 20
+const TIMEOUT = Number(process.env.UPDATE_TIMEOUT) || 200
 const CRON_STRING = process.env.CRON_STRING || crons.everyHour
 // *==============================================================*
 
@@ -42,11 +42,11 @@ const updateQueue = async (age = AGE, limit = LIMIT, timeout = TIMEOUT) => {
       take: limit,
     });
 
-console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpdate.map(u=>u.leetcodeUsername));
+    console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpdate.map(u => u.leetcodeUsername));
 
     for (let user of usersToUpdate) {
       const leetcodeStatsData = await getLCAccount(user.leetcodeUsername);
-     
+
 
       const leetcodeStatsToSave = getLeetcodeStatsToSave(leetcodeStatsData.data);
 
@@ -58,13 +58,13 @@ console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpda
           lastUpdated: dayjs().toDate(),
           ...(leetcodeStatsData.status == 200
             ? {
-                leetcodeStats: {
-                  upsert: {
-                    update: leetcodeStatsToSave,
-                    create: leetcodeStatsToSave,
-                  },
+              leetcodeStats: {
+                upsert: {
+                  update: leetcodeStatsToSave,
+                  create: leetcodeStatsToSave,
                 },
-              }
+              },
+            }
             : {}),
         },
       });
@@ -81,17 +81,40 @@ console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpda
   console.log("Done ✅")
 };
 
-cron.schedule(CRON_STRING, async ()=> {
-  console.log(`[${dayjs().format("mm:hh a, DD-MMM-YYYY")}] Triggering CRON JOB ⏲!`)
+
+const checkDBConnection = async () => {
+  try {
+    await db.$connect();
+    console.log(`Connected to DataBase`)
+  } catch (error) {
+    console.log(`Could not connect to DataBase`, error)
+    console.log('Closing cron jobs!')
+    
+    cron.getTasks().forEach((task,name)=>{
+      console.log(`🛑 Stopping ${name}`)
+      task.stop();
+    })
+    
+  }finally{
+    await db.$disconnect();
+    console.log(`Testing connection closed`)
+  }
   
-  if(isFunctionRunning) {
+}
+
+checkDBConnection();
+
+cron.schedule(CRON_STRING, async () => {
+  console.log(`[${dayjs().format("mm:hh a, DD-MMM-YYYY")}] Triggering CRON JOB ⏲!`)
+
+  if (isFunctionRunning) {
     console.log("⚠️ Job skipped: ALREADY RUNNING")
   };
- isFunctionRunning = true;
+  isFunctionRunning = true;
 
- await updateQueue(AGE, LIMIT, Math.floor(200+Math.random()*100))
- isFunctionRunning = false;
+  await updateQueue(AGE, LIMIT, Math.floor(200 + Math.random() * 100))
+  isFunctionRunning = false;
 
 
 })
-cron.getTasks().forEach((_,x)=>console.log("cron scheduled:", x))
+cron.getTasks().forEach((_, x) => console.log("cron scheduled:", x))
