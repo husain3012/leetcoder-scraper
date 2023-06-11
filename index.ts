@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
-import { leetcodeStats, getLeetcodeStatsToSave } from "./utils";
+import { getLeetcodeStatsToSave } from "./utils";
 import cron from "node-cron"
 import dontenv from "dotenv"
 import crons from "./crons"
+import {getLCAccount} from "leetcode-public-api"
 dontenv.config();
 // *=========================== CONFIG ===========================*
 const AGE  = Number(process.env.UPDATE_AGE) || 3600
@@ -44,10 +45,10 @@ const updateQueue = async (age = AGE, limit = LIMIT, timeout = TIMEOUT) => {
 console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpdate.map(u=>u.leetcodeUsername));
 
     for (let user of usersToUpdate) {
-      const leetcodeStatsData = await leetcodeStats([user.leetcodeUsername]);
-      const userLeetcodeData =
-        leetcodeStatsData.length != 0 && leetcodeStatsData[0];
-      const leetcodeStatsToSave = getLeetcodeStatsToSave(userLeetcodeData);
+      const leetcodeStatsData = await getLCAccount(user.leetcodeUsername);
+     
+
+      const leetcodeStatsToSave = getLeetcodeStatsToSave(leetcodeStatsData.data);
 
       await db.user.update({
         where: {
@@ -55,7 +56,7 @@ console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpda
         },
         data: {
           lastUpdated: dayjs().toDate(),
-          ...(leetcodeStatsData.length != 0
+          ...(leetcodeStatsData.status == 200
             ? {
                 leetcodeStats: {
                   upsert: {
@@ -69,7 +70,8 @@ console.log(`Currently processing ${usersToUpdate.length} users:  `, usersToUpda
       });
       updatedUsers.push({
         username: user.leetcodeUsername,
-        success: leetcodeStatsData.length != 0,
+        success: leetcodeStatsData.status == 200,
+        status: leetcodeStatsData.status
       });
       await new Promise((resolve) => setTimeout(resolve, timeout));
     }

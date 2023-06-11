@@ -21,9 +21,9 @@
   },
   "dependencies": {
     "@prisma/client": "4.14.0",
-    "axios": "^1.4.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "leetcode-public-api": "^1.0.9",
     "node-cron": "^3.0.2"
   }
 }
