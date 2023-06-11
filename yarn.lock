@@ -109,10 +109,10 @@ dotenv@^16.0.3:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.3.tgz#115aec42bac5053db3c456db30cc243a5a836a07"
   integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
 
-leetcode-public-api@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/leetcode-public-api/-/leetcode-public-api-1.0.9.tgz#1f61582aeecd1cb2d5a20319ae2da98837af9421"
-  integrity sha512-SABLKXEUUMGBiF8FWmx2Buc0BcIO3ajLzgBWyfywMcdp8dxrXooyrN89ZUCT6Lk4b96BXXBe2BQcP1K5HfBDtg==
+leetcode-public-api@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/leetcode-public-api/-/leetcode-public-api-1.1.1.tgz#c3dc4dbd39c6b28423dd0bb0087620004c4bf5e9"
+  integrity sha512-awyzajpsaNrmQ2/ykdEG5oyZFbdnsZzrL5f3nMD8OhKnP4jG1mK8OOHJKrCW2QK+VbC+628+kI4si02rBvKYIA==
 
 make-error@^1.1.1:
   version "1.3.6"

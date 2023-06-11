@@ -47,8 +47,13 @@ const updateQueue = async (age = AGE, limit = LIMIT, timeout = TIMEOUT) => {
     for (let user of usersToUpdate) {
       const leetcodeStatsData = await getLCAccount(user.leetcodeUsername);
 
+      console.log(`Fetched for ${leetcodeStatsData.data.username} (${leetcodeStatsData.data.profile.realName}), ranking: ${leetcodeStatsData.data.profile.ranking}`)
 
-      const leetcodeStatsToSave = getLeetcodeStatsToSave(leetcodeStatsData.data);
+
+      
+
+
+      const leetcodeStatsToSave = leetcodeStatsData.status==200?getLeetcodeStatsToSave(leetcodeStatsData.data):null;
 
       await db.user.update({
         where: {
@@ -56,7 +61,7 @@ const updateQueue = async (age = AGE, limit = LIMIT, timeout = TIMEOUT) => {
         },
         data: {
           lastUpdated: dayjs().toDate(),
-          ...(leetcodeStatsData.status == 200
+          ...(leetcodeStatsToSave!=null
             ? {
               leetcodeStats: {
                 upsert: {
@@ -64,8 +69,13 @@ const updateQueue = async (age = AGE, limit = LIMIT, timeout = TIMEOUT) => {
                   create: leetcodeStatsToSave,
                 },
               },
+              failedRetries: 0
             }
-            : {}),
+            : {
+              failedRetries: {
+                increment: 1
+              }
+            }),
         },
       });
       updatedUsers.push({
