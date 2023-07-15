@@ -3,10 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("POSTGRES_URL_NON_POOLING")
-  directUrl         = env("POSTGRES_URL_NON_POOLING")
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model User {
@@ -23,12 +21,13 @@ model User {
 
 model Group {
   id             Int      @id @default(autoincrement())
-  name           String   @unique
+  name           String
   description    String?
   coverPhoto     String?
   createdByEmail String
   inviteID       String   @unique
   lastAccessed   DateTime @default(now())
+  urlSlug        String   @unique
   members        User[]   @relation("GroupToUser")
 }
 
@@ -42,13 +41,7 @@ model LeetcodeInfo {
   mediumSolved     Int
   hardSolved       Int
   contestAttended  Int?
-  contestRating    Int?
   contestRanking   Int?
+  contestRating    Int?
   username         User    @relation(fields: [leetcodeUsername], references: [leetcodeUsername])
-}
-
-model UpdateQueue {
-  id       Int      @id @default(autoincrement())
-  inTime   DateTime
-  username String   @unique
 }
