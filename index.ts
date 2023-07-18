@@ -7,11 +7,13 @@ import crons from "./utils/crons"
 import { getLCAccount } from "leetcode-public-api"
 import CONFIG from "./config";
 import { updateQueue } from "./utils/updateQueue";
+import { failedRetriesRemoval } from "./utils/cleanupQueue";
 dontenv.config();
 
 
 const db = new PrismaClient();
-let isFunctionRunning = false;
+let isUpdateQueueRunning = false;
+let isUserCLeanupQueueRunning = false;
 
 
 
@@ -43,13 +45,27 @@ checkDBConnection();
 cron.schedule(CONFIG.CRON_STRING, async () => {
   console.log(`[${dayjs().format("mm:hh a, DD-MMM-YYYY")}] Triggering CRON JOB ⏲!`)
 
-  if (isFunctionRunning) {
+  if (isUpdateQueueRunning) {
     console.log("⚠️ Job skipped: ALREADY RUNNING")
   };
-  isFunctionRunning = true;
+  isUpdateQueueRunning = true;
 
   await updateQueue({})
-  isFunctionRunning = false;
+  isUpdateQueueRunning = false;
+
+
+})
+
+cron.schedule(crons.everyDayAtMidnight, async () => {
+  console.log(`[${dayjs().format("mm:hh a, DD-MMM-YYYY")}] Triggering CRON JOB ⏲!`)
+
+  if (isUserCLeanupQueueRunning) {
+    console.log("⚠️ Job skipped: ALREADY RUNNING")
+  };
+  isUserCLeanupQueueRunning = true;
+
+  await failedRetriesRemoval({})
+  isUserCLeanupQueueRunning = false;
 
 
 })
@@ -57,6 +73,7 @@ cron.schedule(CONFIG.CRON_STRING, async () => {
 
 const main = async () =>{
   await updateQueue({})
+  await failedRetriesRemoval({})
   cron.getTasks().forEach((_, x) => console.log("cron scheduled:", x))
 }
 
