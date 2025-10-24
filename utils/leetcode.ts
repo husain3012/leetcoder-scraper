@@ -1,4 +1,4 @@
-import {ILeetCodeUser} from "leetcode-public-api/@types"
+import {ILeetCodeUser} from "leetcode-public-api/types"
 
 export const getLeetcodeStatsToSave = (leetcodeUser: ILeetCodeUser) => {
   return {
