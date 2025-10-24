@@ -4,13 +4,13 @@ export const getLeetcodeStatsToSave = (leetcodeUser: ILeetCodeUser) => {
   return {
     easySolved: leetcodeUser.submitStatsGlobal.acSubmissionNum.find(
       (s) => s.difficulty == "Easy"
-    ).count,
+    )?.count ?? 0,
     mediumSolved: leetcodeUser.submitStatsGlobal.acSubmissionNum.find(
       (s) => s.difficulty == "Medium"
-    ).count,
+    )?.count ?? 0,
     hardSolved: leetcodeUser.submitStatsGlobal.acSubmissionNum.find(
       (s) => s.difficulty == "Hard"
-    ).count,
+    )?.count ?? 0,
     ranking: leetcodeUser.profile.ranking,
     streak: leetcodeUser.userCalendar.streak,
     avatar: leetcodeUser.profile.userAvatar,
